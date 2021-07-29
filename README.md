@@ -113,5 +113,16 @@ when dealing with files.
 
 
 ➔ A minimalistic app can be created for volunteers, to update their health 
-issues ,dosage information and alert doctors monitoring them
+issues ,dosage information and alert doctors monitoring them.
+
+
+## contact us:
+
+[Rachitha BR](www.github.com/Rach1507)
+
+[Phanishree K]
+
+[Tarun Teja](www.github.com/tarunsraina)
+
+
 
