@@ -118,11 +118,11 @@ issues ,dosage information and alert doctors monitoring them.
 
 ## contact us:
 
-[Rachitha BR](www.github.com/Rach1507)
+[Rachitha BR](https://github.com/Rach1507)
 
-[Phanishree K](www.github.com/phanishree)
+[Phanishree K](https://github.com/phanishree)
 
-[Tarun Teja](www.github.com/tarunsraina)
+[Tarun Teja](https://github.com/tarunsraina)
 
 
 
