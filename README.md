@@ -120,7 +120,7 @@ issues ,dosage information and alert doctors monitoring them.
 
 [Rachitha BR](www.github.com/Rach1507)
 
-[Phanishree K]
+[Phanishree K](www.github.com/phanishree)
 
 [Tarun Teja](www.github.com/tarunsraina)
 
