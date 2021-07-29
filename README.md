@@ -11,16 +11,16 @@
 ● Project analysis
 
 
-● Software and hardware requirements
 
 
-● Literature survey
 
 
-● System design
 
 
-● System model 
+
+
+
+
 
 
 ● Conclusion
@@ -29,7 +29,7 @@
 ● Future enhancement
 
 
-● References
+
 
 
 ## Overview of Project
