@@ -833,7 +833,7 @@ int login_page()
     else
         return 0;
 }
-
+//check
 int main()
 {
         fstream file1, file2, file4;
