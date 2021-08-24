@@ -1,2 +1,0 @@
-ind|HSI|HSN|Phone|LD|Trial-Stage
-0|c|b|b|b|b

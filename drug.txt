@@ -1,2 +1,0 @@
-ind|Drug name|Drug type|Department|Stage|Trial-Stage
-0|b|c|c|c|c

@@ -3,7 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include<stdio.h>
+#include<ctype.h>
+#include <algorithm>
 using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
+using std::string;
 static int dashboardFlag;
 class ctm
 {
@@ -19,12 +26,10 @@ int get_num_records(char filename[])
     file2.open(filename, ios::in);
     if (!file2)
     {
-        cout << "Error in get num recs";
         return 0;
     }
     while (!file2.fail())
     {
-         //cout << "Error in get num recs in while";
         file2.getline(stdrec[I].ind, 5, '|');
         file2.getline(stdrec[I].field1, 20, '|');
         file2.getline(stdrec[I].field2, 15, '|');
@@ -45,7 +50,7 @@ void write_details(char filename[])
     file2.open(filename, ios::in);
     if (!file2)
     {
-        cout<<"erroe in write details file";
+        cout<<"error in write details file";
         return;
     }
     if (!file2.fail()) 
@@ -57,17 +62,78 @@ void write_details(char filename[])
         file2.getline(stdrec[0].field4, 10, '|');
         file2.getline(stdrec[0].field5, 15, '\n');
     }
-
+    if(dashboardFlag==0)
     cout << "\t" << stdrec[0].field1 << "\t" << stdrec[0].field2 << "\t" << stdrec[0].field3 << "\t" << stdrec[0].field4 << "\t" << stdrec[0].field5 << "\n";
-
+    else
+    cout << "\t" << stdrec[0].field2 << "\t" << stdrec[0].field3 << "\t" << stdrec[0].field4 << "\t" << stdrec[0].field5 << "\n";
     file2.close();
 }
 
+string convertToString(char* a)
+{
+    string s(a);
+  
+    return s;
+}
+bool validation(string toBeChecked,int level ){
+
+if(level==1){
+for(int i=0;i<toBeChecked.length();i++){
+    if(isdigit(toBeChecked[i])){
+
+    }else{
+        return false;
+    }
+}
+return true;
+}
+if(level==2||level==3||level==6){
+    for(int i=0;i<toBeChecked.length();i++){
+    if(isdigit(toBeChecked[i])){
+       
+
+    }else{
+         return false;
+    }
+}
+return true;
+}
+
+if(level==5||level==8||level==9){
+    for(int i=0;i<toBeChecked.length();i++){
+    if(isdigit(toBeChecked[i])){
+       
+
+    }else{
+         return true;
+    }
+}
+return false;
+  
+}
+
+if(level==4){
+    if(toBeChecked=="Active"||toBeChecked=="Inactive"||toBeChecked=="active"||toBeChecked=="inactive"){
+        return false;
+    }else{
+        return true;
+    }
+}
+if(level==7){  //to check phone number
+    for(int i=0;i<toBeChecked.length();i++){
+    if(toBeChecked.length()!=10||isalpha(toBeChecked[i])){
+        return true;
+
+    }else{
+        
+    }
+}
+return false;
+}
+return true;
+}
 void add_record(string filename,string indFilename)
 {
-   // string index_str = filename + "-idx.txt";
-
-    //filename = filename + ".txt";
 
     int n = indFilename.length();
     int n0 = filename.length();
@@ -78,14 +144,16 @@ void add_record(string filename,string indFilename)
     strcpy(index, indFilename.c_str());
     strcpy(record_file, filename.c_str());
 
-    char buf1[100], buf2[20],header;
-    fstream file1, file2;
-    int I, cnt;
+    char buf1[100], buf2[20],idx_drugName[10],idx_no[5],header;
+    fstream file1, file2,file3;
+    int I=0, cnt=0;
     ctm s;
 
+    bool field1=true,field2=true,field3=true,field4=true,field5=true,field6=true,field7=true,field8=true,field9=true;
+
     cnt = get_num_records(record_file);
-     cout<<"No of recordings in file "<<cnt;
     file1.open(index, ios::out | ios::app);
+    file3.open(index,ios::in);
     if (!file1)
     {
         cout << "\nError !\n";
@@ -100,38 +168,178 @@ void add_record(string filename,string indFilename)
      if(cnt==0&&filename.compare("drug.txt")==0){
         file2<<"ind|Drug name|Drug type|Department|Stage|Trial-Stage\n";
     }else if(cnt==0){
-        file2<<"ind|HSI|HSN|Phone|LD|Trial-Stage\n";
+        file2<<"ind|HSI|HSN|Phone|Age|Trial-Stage\n";
     }
     int no;
-    cout << "\nEnter the no. of records to be added : ";
-    cin >> no;
     cout << "\nEnter the details :\n";
-
-    write_details(record_file);
     int j=0;
+    I=cnt;
 
-    for (I = cnt,j=1; I < (cnt + no); I++)
-    {
-        cout<<"Enter the details of drug "<<j++;
-        write_details(record_file);
-        cin >> s.field1;
-        cin >> s.field2;
+    //for (I = cnt,j=1; I <(cnt + 1); I++)
+//    {
+        if(dashboardFlag==0){
+
+            
+
+            while(field1){
+                cout<<"\nEnter Drug name:\n";
+                cin >> s.field1;
+               string s1=convertToString(s.field1);
+               field1= validation(s1,1);
+               if(field1){
+                   cout<<"please enter the valid drug name\n";
+               }
+            }
+        
+
+        if(!file3)
+	{
+		cout<<"\nError !\n";
+		exit(0);
+    }
+    int flag=0;
+	while(!file3.eof())
+	{
+		file3.getline(idx_drugName,10,'|');     
+		file3.getline(idx_no,5,'\n');       
+		if(strcmp(s.field1,idx_drugName)==0)
+		{
+			 
+			flag=1;
+			break;
+		}
+	}
+
+        if(flag==0){
+            
+
+         while(field2){
+                cout<<"Enter drug type\n";
+                cin >> s.field2;
+               string s1=convertToString(s.field2);
+               field2= validation(s1,2);
+               if(field2){
+                   cout<<"please enter the valid drug type\n";
+               }
+            }
+
+        
+
+        while(field3){
+                cout<<"Enter the department\n";
         cin >> s.field3;
-        cin >> s.field4;
-        cin >> s.field5;
+               string s1=convertToString(s.field3);
+               field3= validation(s1,3);
+               if(field3){
+                   cout<<"please enter the valid department\n";
+               }
+            }
 
-        if(cnt==0){
+        
+
+        while(field4){
+              cout<<"Enter the stage\n";
+        cin >> s.field4;
+               string s1=convertToString(s.field4);
+               field4= validation(s1,4);
+               if(field4){
+                   cout<<"please enter the valid stage\n";
+               }
+            }
+
+     
+
+        while(field5){
+            cout<<"Enter Trial-stage\n";
+        cin >> s.field5;
+               string s1=convertToString(s.field5);
+               field5= validation(s1,5);
+               if(field5){
+                   cout<<"please enter the valid Tial-stage\n";
+               }
+            }
+
+
+        }else{
+            cout<<"drug already present\n";
+            if(no>1)
+            cout<<"Please enter new drugs\n";
+        }
+        }else{
+            
+
+        while(field6){
+             cout<<"Enter human subject name\n";
+        cin >> s.field2;
+               string s1=convertToString(s.field2);
+               field6= validation(s1,6);
+               if(field6){
+                   cout<<"please enter the valid human subject name\n";
+               }
+            }
+
+        
+
+         while(field7){
+             cout<<"Enter the phone number\n";
+        cin >> s.field3;
+               string s1=convertToString(s.field3);
+               field7= validation(s1,7);
+               if(field7){
+                   cout<<"please enter the valid phone number\n";
+               }
+            }
+
+        
+
+        while(field8){
+             cout<<"Enter the age\n";
+        cin >> s.field4;
+               string s1=convertToString(s.field4);
+               field8= validation(s1,8);
+               if(field8){
+                   cout<<"please enter the valid age\n";
+               }
+            }
+
+        while(field9){
+             cout<<"Enter the Trial-stage\n";
+        cin >> s.field5;
+               string s1=convertToString(s.field5);
+               field9= validation(s1,9);
+               if(field9){
+                   cout<<"please enter the valid Trial-stage\n";
+               }
+            }
+
+
+        }
+
+        if(cnt==0&&dashboardFlag==0){
         sprintf(buf2, "%s|%d\n", s.field1, I);
         file1 << buf2;
         sprintf(buf1, "%d|%s|%s|%s|%s|%s\n", I, s.field1, s.field2, s.field3, s.field4, s.field5);
         file2 << buf1;
-        }else{
-        sprintf(buf2, "%s|%d\n", s.field1, I-1);
+        }else if(cnt==0){
+            sprintf(buf2, "%d|%d\n", I, I);
         file1 << buf2;
-        sprintf(buf1, "%d|%s|%s|%s|%s|%s\n", I-1, s.field1, s.field2, s.field3, s.field4, s.field5);
-        file2 << buf1;
+        sprintf(buf1, "%d|%d|%s|%s|%s|%s\n", I,I, s.field2, s.field3, s.field4, s.field5);
+        file2<<buf1;
+        }else{
+
+            if(dashboardFlag==0){
+                sprintf(buf2, "%s|%d\n", s.field1, I-1);
+                file1 << buf2;
+                sprintf(buf1, "%d|%s|%s|%s|%s|%s\n", I-1,s.field1, s.field2, s.field3, s.field4, s.field5);
+                file2<<buf1;
+            }else{
+                sprintf(buf2, "%d|%d\n", I-1, I-1);
+                file1 << buf2;
+                sprintf(buf1, "%d|%d|%s|%s|%s|%s\n", I-1,I-1, s.field2, s.field3, s.field4, s.field5);
+                file2<<buf1;
+            }
         }
-    }
+  //  }
     file1.close();
     file2.close();
 }
@@ -140,7 +348,6 @@ void retrieve_details(char index_no[], char file_name[])
 {
 
     int no = get_num_records(file_name);
-    cout<<no<<" numbers";
 
     for (int i = 0; i < no; i++)
     {
@@ -148,18 +355,31 @@ void retrieve_details(char index_no[], char file_name[])
         {
             cout << "\n\n"
                  << "Details :\n";
-            write_details(file_name);
-            cout << "\t" << stdrec[i].field1 << "\t\t" << stdrec[i].field2 << "\t\t" << stdrec[i].field3 << "\t\t" << stdrec[i].field4 << "\t\t" << stdrec[i].field5 << "\n";
-            break;
+
+           if(dashboardFlag==0){
+               cout<<"Drug name: "<<stdrec[i].field1<<"\n";
+               cout<<"Drug type: "<<stdrec[i].field2<<"\n";
+               cout<<"Department: "<<stdrec[i].field3<<"\n";
+               cout<<"Stage: "<<stdrec[i].field4<<"\n";
+               cout<<"Trial-stage: "<<stdrec[i].field5<<"\n";
+               break;
+
+           }else{
+               cout<<"Human subject id: "<<stdrec[i].field1<<"\n";
+               cout<<"Humman subject name: "<<stdrec[i].field2<<"\n";
+               cout<<"Phone number: "<<stdrec[i].field3<<"\n";
+               cout<<"Last dose: "<<stdrec[i].field4<<"\n";
+               cout<<"Trial-stage: "<<stdrec[i].field5<<"\n";
+               break;
+
+           }
+
         }
     }
 }
 
 void search_record(string filename,string indFilename)
 {
-   // string index_str = filename + "-idx.txt";
-
-    //filename = filename + ".txt";
 
     int n = indFilename.length();
     int n0 = filename.length();
@@ -174,8 +394,6 @@ void search_record(string filename,string indFilename)
     int I, flag1;
     char st_no[5], name[20], required_name[20];
     fstream file1;
-
-    // cout<<index;
     if(dashboardFlag==0){
     cout << "\nEnter the Name of the drug";
     cout << " whose record is to be searched\n";
@@ -199,10 +417,8 @@ void search_record(string filename,string indFilename)
 
         if (strcmp(name, required_name) == 0)
         {
-            // cout <<filename;
             retrieve_details(st_no, record_file);
             flag1 = 1;
-            cout<<"hello";
             break;
         }
     }
@@ -214,15 +430,17 @@ void search_record(string filename,string indFilename)
 void delete_drugRec(string fileName,string indxFilename,string indx_no,string drugName)
 {
 int I=0;
-fstream file1,file2;
-char filenamechr[10],idxfilenamechr[10];
-//string filename1="drug.txt";
+fstream file1,file2,file3,file4;
+char filenamechr[10],idxfilenamechr[10],dummy[20];
 
-// strcpy(idxfilenamechr,indxFilename.c_str());
+ strcpy(idxfilenamechr,indxFilename.c_str());
   strcpy(filenamechr, fileName.c_str());
+
+  
 
 int	cnt = get_num_records(filenamechr);	
 	int flag=-1;
+
 	for(I=0;I<cnt;I++)     
 	{
         string ind=stdrec[I].ind;
@@ -235,13 +453,13 @@ int	cnt = get_num_records(filenamechr);
 	}
 	if(flag==-1)              
 	{
-		cout<<"\nError !\n";
+		cout<<"\nError!\n";
 		return;
 	}
 	if(flag==(cnt-1))          
 	{
 		cnt--;
-		cout<<"\nDeleted if(flag==(cnt-1))!\n";
+		cout<<"\nDeleted !\n";
 		
 	}
 	else
@@ -254,14 +472,14 @@ int	cnt = get_num_records(filenamechr);
 		cout<<"\nDeleted !\n";
 	}
 
-    file1.open(indxFilename,ios::out);
 
-	file2.open(filenamechr,ios::out);  
+      file2.open(filenamechr,ios::out); 
+
+	 file1.open(indxFilename,ios::out);
+
     if(file2.fail()){
         cerr<<"Error:"<<strerror(errno);
     }
-        cout<<"Value of count 1 "<<cnt;  
-    cout<<"Value of count 2"<<cnt;
 
 for(I=0;I<cnt;I++)                   
 	{             
@@ -269,14 +487,16 @@ for(I=0;I<cnt;I++)
             file2<<"ind|Drug name|Drug type|Department|Stage|Trial-Stage\n";
         }else if(I==0){
              file2<<"ind|HSI|HSN|phone|LD|Trial-Stage\n";
-        }  else{
+        }  else if(dashboardFlag==0){
             file1<<stdrec[I].field1<<"|"<<I-1<<"\n";
 		file2<<I-1<<"|"<<stdrec[I].field1 <<"|"<<stdrec[I].field2<<"|"<<stdrec[I].field3<<"|"<<stdrec[I].field4<<"|"<<stdrec[I].field5<<"\n";
      
+        }else{
+            file1<<I-1<<"|"<<I-1<<"\n";
+		file2<<I-1<<"|"<<I-1 <<"|"<<stdrec[I].field2<<"|"<<stdrec[I].field3<<"|"<<stdrec[I].field4<<"|"<<stdrec[I].field5<<"\n";
         }                   
 		
 	}
-
 	file1.close();
 	file2.close();
 	return;
@@ -287,31 +507,49 @@ void delete_record(string fileName,string indxFileName)
 {
 
     int I,flag;
-char idx_no[5],drg_name[5],idx_drugName[5];
+char idx_no[20],drg_name[20],idx_drugName[20],indFileNameChr[20];
 fstream file1;
 
-     if(dashboardFlag==0)
+
+     if(dashboardFlag==0){
 	cout<<"\nEnter the name of the drug which is to be deleted\n";
+     }
     else
     cout<<"\nEnter the Human Subject Id, whose record is to be deleted\n";
 
 	cin>>drg_name;
-	file1.open(indxFileName,ios::in);
+
+  /*  if(dashboardFlag==0){
+        string s=convertToString(drg_name);
+        string remove1=s+".txt";
+        string remove2=s+"-idx.txt";
+        char rem1[20],rem2[20];
+        strcpy(rem1,remove1.c_str());
+        strcpy(rem2,remove1.c_str());
+       int r1= remove(rem1);
+        int r2=remove(rem2);
+        cout<<"rem1name="<<rem1<<"rem1="<<r1<<"\n";
+        cout<<"rem2name="<<rem2<<" rem2="<<r2<<"\n";
+    }*/
+    strcpy(indFileNameChr, indxFileName.c_str());
+	file1.open(indFileNameChr,ios::in);
 	if(!file1)
 	{
-		cout<<"\nError !\n";
+		cout<<"\nError in opening file!\n";
 		exit(0);
 	}
 	flag=0;
 
 	while(!file1.eof())
 	{
-		file1.getline(idx_drugName,10,'|');     
-		file1.getline(idx_no,5,'\n');       
+		file1.getline(idx_drugName,20,'|');     
+		file1.getline(idx_no,20,'\n');       
 
 		if(strcmp(drg_name,idx_drugName)==0)
 		{
-			delete_drugRec(fileName,indxFileName,idx_no,drg_name); 
+            string idx=convertToString(idx_no);
+            string drgname=convertToString(drg_name);
+			delete_drugRec(fileName,indxFileName,idx,drgname); 
 			flag=1;
 			break;
 		}
@@ -333,6 +571,8 @@ char filenameChr[15];
 strcpy(filenameChr,filename.c_str());
 int countOfRecs=get_num_records(filenameChr);
 ctm recsObj[countOfRecs];
+
+bool f1=true,f2=true,f3=true,f4=true,f5=true,f6=true,f7=true,f8=true;
 
 in.open(filenameChr,ios::in);
 
@@ -357,25 +597,144 @@ in.getline(recsObj[I].field2,15,'|');
 in.getline(recsObj[I].field3,15,'|');
 in.getline(recsObj[I].field4,10,'|');
 in.getline(recsObj[I].field5,15,'\n');
-cout<<recsObj[I].field1<<" "<<recsObj[I].field2<<" "<<recsObj[I].field3<<" "<<recsObj[I].field4<<" "<<recsObj[I].field5<<"\n";
 I++;
  }
 
 I--;
 char drugNameChr[20];
 strcpy(drugNameChr,drugName.c_str());
-cout<<"I count: "<<I;
 for(j=0;j<I;j++)
 {
 if(strcmp(drugNameChr,recsObj[j].field1)==0)
 {
+   cout<<"The old values are\n";
+   if(dashboardFlag==0){
+    
+ cout<<"Drug name: "<<recsObj[j].field1<<"\n";
+ cout<<"Drug type: "<<recsObj[j].field2<<"\n";
+ cout<<"Department: "<<recsObj[j].field3<<"\n";
+ cout<<"Stage: "<<recsObj[j].field4<<"\n";
+ cout<<"Trial-stage: "<<recsObj[j].field5<<"\n";
+ }else{
+    
+ cout<<"Human subject id: "<<recsObj[j].field1<<"\n";
+ cout<<"Human subject name: "<<recsObj[j].field2<<"\n";
+ cout<<"Phone number: "<<recsObj[j].field3<<"\n";
+ cout<<"Last dose: "<<recsObj[j].field4<<"\n";
+ cout<<"Trial-stage: "<<recsObj[j].field5<<"\n";
+
+ }
+   cout<<"\n";
 cout<<"\nEnter the new values \n";
   //cin>>recsObj[j].field1;     //field1 cannot be modified as it is either the drug name or the human subject id
- cin>>recsObj[j].field2;
-  cin>>recsObj[j].field3;
- cin>>recsObj[j].field4;
-  cin>>recsObj[j].field5;
-  cout<<"new vals "<<recsObj[j].field1<<" "<<recsObj[j].field2<<" "<<recsObj[j].field3<<" "<<recsObj[j].field4<<" "<<recsObj[j].field5<<"\n";
+ //cin>>recsObj[j].field2;
+if(dashboardFlag==0){
+ while(f2){
+                cout<<"Enter drug type\n";
+                cin>>recsObj[j].field2;
+               string s1=convertToString(recsObj[j].field2);
+               f2= validation(s1,2);
+               if(f2){
+                   cout<<"please enter the valid drug type\n";
+               }
+            }
+while(f3){
+                cout<<"Enter drug department\n";
+                cin>>recsObj[j].field3;
+               string s1=convertToString(recsObj[j].field2);
+               f3= validation(s1,2);
+               if(f2){
+                   cout<<"please enter the valid drug department\n";
+               }
+            }
+
+            while(f4){
+              cout<<"Enter the stage\n";
+        cin >> recsObj[j].field4;
+               string s1=convertToString(recsObj[j].field4);
+               f4= validation(s1,4);
+               if(f4){
+                   cout<<"please enter the valid stage\n";
+               }
+            }
+
+     
+
+        while(f5){
+            cout<<"Enter Trial-stage\n";
+        cin >> recsObj[j].field5;
+               string s1=convertToString(recsObj[j].field5);
+               f5= validation(s1,5);
+               if(f5){
+                   cout<<"please enter the valid Tial-stage\n";
+               }
+            }
+
+}else{
+while(f6){
+             cout<<"Enter human subject name\n";
+        cin >>recsObj[j].field2;
+               string s1=convertToString(recsObj[j].field2);
+               f6= validation(s1,6);
+               if(f6){
+                   cout<<"please enter the valid human subject name\n";
+               }
+            }
+
+        
+
+         while(f7){
+             cout<<"Enter the phone number\n";
+        cin >> recsObj[j].field3;
+               string s1=convertToString(recsObj[j].field3);
+               f7= validation(s1,7);
+               if(f7){
+                   cout<<"please enter the valid phone number\n";
+               }
+            }
+
+        
+
+        while(f8){
+             cout<<"Enter the age\n";
+        cin >> recsObj[j].field4;
+               string s1=convertToString(recsObj[j].field4);
+               f8= validation(s1,8);
+               if(f8){
+                   cout<<"please enter the valid age\n";
+               }
+            }
+
+        while(f1){
+             cout<<"Enter the Trial-stage\n";
+        cin >>recsObj[j].field5;
+               string s1=convertToString(recsObj[j].field5);
+               f1= validation(s1,9);
+               if(f1){
+                   cout<<"please enter the valid Trial-stage\n";
+               }
+            }
+
+
+}
+
+ if(dashboardFlag==0){
+     cout<<"new values are as follows:\n";
+ cout<<"Drug name: "<<recsObj[j].field1<<"\n";
+ cout<<"Drug type: "<<recsObj[j].field2<<"\n";
+ cout<<"Department: "<<recsObj[j].field3<<"\n";
+ cout<<"Stage: "<<recsObj[j].field4<<"\n";
+ cout<<"Trial-stage: "<<recsObj[j].field5<<"\n";
+ }else{
+     cout<<"new values are as follows:\n";
+ cout<<"Human subject id: "<<recsObj[j].field1<<"\n";
+ cout<<"Human subject name: "<<recsObj[j].field2<<"\n";
+ cout<<"Phone number: "<<recsObj[j].field3<<"\n";
+ cout<<"Last dose: "<<recsObj[j].field4<<"\n";
+ cout<<"Trial-stage: "<<recsObj[j].field5<<"\n";
+
+ }
+ 
 break;
 
   }
@@ -434,16 +793,29 @@ cout<<"\n\n"<<"Drugs details : \n";
 		file2.getline(ctmObj.field3,15,'|');
 		file2.getline(ctmObj.field4,10,'|');
 		file2.getline(ctmObj.field5,15,'\n');
-cout<<ctmObj.ind<<"\t\t"<<ctmObj.field1<<"\t\t"<<ctmObj.field2<<"\t\t"<<ctmObj.field3<<"\t\t"<<ctmObj.field4<<"\t\t"<<ctmObj.field5<<"\n";
+cout<<ctmObj.field1<<"\t\t"<<ctmObj.field2<<"\t\t"<<ctmObj.field3<<"\t\t"<<ctmObj.field4<<"\t\t"<<ctmObj.field5<<"\n";
 	 	
  	}
 	file2.close();
 }
 
+
+
+
+
 int login_page()
 {
     char username[20], password[20];
-    char user[20] = "admin", pass[20] = "pass";
+    /*char user1[20] = "rachitha", pass1[20] = "pass";
+    char user2[20] = "tarun", pass2[20] = "pass";
+    char user3[20] = "phani", pass3[20] = "pass";
+    char user4[20] = "atharva", pass4[20] = "pass";
+    char user5[20] = "aarabhi", pass5[20] = "pass";*/
+    char user1[20] = "dr.rachBR", pass1[20] = "passRach";
+    char user2[20] = "dr.ahuja", pass2[20] = "passAhuja";
+    char user3[20] = "dr.rahia", pass3[20] = "passRahia";
+    char user4[20] = "dr.kashyap", pass4[20] = "passKash";
+    char user5[20] = "dr.aarabhi", pass5[20] = "passAara";
     cout << endl
          << endl;
     cout.width(25);
@@ -456,7 +828,7 @@ int login_page()
     cout << "\t\t\t\t\t\t\t\t\t    PASSWORD: ";
     cin >> password;
     cout << "------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
-    if (strcmp(username, user) == 0 && strcmp(password, pass) == 0)
+    if ((strcmp(username, user1) == 0 && strcmp(password, pass1) == 0)||(strcmp(username, user2) == 0 && strcmp(password, pass2) == 0)||(strcmp(username, user3) == 0 && strcmp(password, pass3) == 0)||(strcmp(username, user4) == 0 && strcmp(password, pass4) == 0)||(strcmp(username, user5) == 0 && strcmp(password, pass5) == 0))
         return 1;
     else
         return 0;
@@ -464,7 +836,7 @@ int login_page()
 
 int main()
 {
-    fstream file1, file2, file4;
+        fstream file1, file2, file4;
     std::cout << "\n\t\t\t \t  _______________________________________________________________________________________________________ ";
     std::cout << "\n\t\t\t \t |                                                                                                       | ";
     std::cout << "\n\t\t\t \t |                                    CLINICAL TRIAL MANAGEMENT SYSTEM                                   | ";
@@ -475,7 +847,7 @@ int main()
     string drugIdxFile;
     fstream drugFileObj;
     fstream  indx;
-    check = 1;//login_page();
+    check = login_page();
     if (check == 1)
     {
         cout << "---------------------------------------------------------\n"
@@ -483,10 +855,12 @@ int main()
              << "\n--------------------------------------------------------";
 
         int choice;
-        std::cout << "\n1: DRUG TRIAL DASHBOARD \n";
-        std::cout << "\n2: HUMAN SUBJECTS DASHBOARD \n";
+       
         for (;;)
         {
+        std::cout << "\n1: DRUG TRIAL DASHBOARD \n";
+        std::cout << "\n2: HUMAN SUBJECTS DASHBOARD \n";
+        std::cout << "\n3: Exit \n";
             std::cout << "PLEASE ENTER YOUR CHOICE:\n";
             cin >> choice;
             if(choice==1){
@@ -498,17 +872,19 @@ int main()
             {
             case 1:
             {
+                int backToUpperLevel2=0;
                 for (;;)
                 {
-                    cout << "\nPlease choose :\n 0:Exit\n 1:Add Drug Record\n";
-                    cout << "2:Search Drug Record\n 3:Delete Drug Record\n";
-                    cout << "4:Display Drug Records\n" "5.Modify Records\n";
+                    cout << "\nPlease choose :\n\n1:Add Drug Record\n\n";
+                    cout << "2:Search Drug Record\n\n";
+                    cout << "3:Delete drug\n\n"<<"4:Display Drug Records\n\n""5.Modify Records\n\n0:Back to main menu\n";
                     cin >> choice;
                     switch (choice)
                     {
                     case 0:
                     {
-                        exit(0);
+                        backToUpperLevel2=1;
+                        //exit(0);
                         break;
                     }
                     case 1:
@@ -516,7 +892,6 @@ int main()
 
                         string fileName = "drug.txt";
                         string indxFilename="drug-idx.txt";
-                        cout << "\nEnter the details :\n";
                         add_record(fileName,indxFilename);
                         break;
                     }
@@ -531,7 +906,7 @@ int main()
                     {
                          string fileName = "drug.txt";
                         string indxFilename="drug-idx.txt";
-                        delete_record(fileName,indxFilename);
+                      delete_record(fileName,indxFilename);
                         break;
                     }
                     case 4:
@@ -554,34 +929,61 @@ int main()
                         break;
                     }
                     }
+                    if(backToUpperLevel2==1)
+                    break;
                 }
                 break;
             }
 
             case 2:
             {
-                cout << "\nHUMAN SUBJECTS DASHBOARD\n";
+               
 
                 for(;;){
-                    cout<<"Enter the drug name\n";
+                     cout << "\nHUMAN SUBJECTS DASHBOARD\n";
+                    cout<<"Enter the drug name  (q=go to main menu)\n";
                     cin>>drugFileName;
+                    if(drugFileName=="q"){
+                        break;
+                    }
+                    fstream drugcheck;
+                    drugcheck.open("drug-idx.txt",ios::in);
+                    if(!drugcheck)
+                    {
+                        cout<<"\nError !\n";
+                        exit(0);
+                    }
+                	int flag=0;
+                    char idx_drugName[10],idx_no[5],drugFileNameChr[10];
+                    strcpy(drugFileNameChr,drugFileName.c_str());
+
+                    while(!drugcheck.eof())
+                    {
+                        drugcheck.getline(idx_drugName,10,'|');     
+                        drugcheck.getline(idx_no,5,'\n');
+                        if(strcmp(drugFileNameChr,idx_drugName)==0){
+                            flag=1;
+                            break;
+                        }
+                    }
+                if(flag==1){
+                    cout<<"\n";
+                    cout<<"Here you can find the data of the above entered drug \n";
                     drugIdxFile+=drugFileName+"-idx.txt";
-                  //  drugIdxFile="drugFiles/"+drugIdxFile;
                     drugFileName+=".txt";
-                   // drugFileName="drugFiles/"+drugFileName;
-                    drugFileObj.open(drugFileName,ios::in|ios::app);
-                    indx.open(drugIdxFile,ios::in|ios::app);
+                    int backToUpperLevel1=0;
                     for(;;){
 
-                    cout << "\nPlease choose :\n 0:Exit\n 1:Add patient Record\n";
-                    cout << "2:Search Drug Record\n 3:Delete Drug Record\n";
-                    cout << "4:Display Drug Records\n" "5.Modify Records\n";
+                    cout << "\nPlease choose :\n1:Add Human subject Record\n\n";
+                    cout << "2:Search Human subject Record\n\n3:Delete Human subject Record\n\n";
+                    cout << "4:Display Human subject Records\n\n""5.Modify Records\n\n0:Go back to human subject dashboard\n";
                     cin >> choice;
                     switch (choice)
                     {
                     case 0:
                     {
-                        exit(0);
+                       // exit(0);
+                       backToUpperLevel1=1;
                         break;
                     }
                     case 1:
@@ -614,26 +1016,26 @@ int main()
                             exit(0);
                             }
                     }
+                    if(backToUpperLevel1==1)
+                    break;
                 }
+
+                }else{
+                    cout<<"Sorry, te drug name you've entered is not yet added in the database\n";
+                }
+                
            
                 }
          break;
             } 
+            case 3:
+            exit(0);
+            break;
         }//end of switch main
      } //end of for loop main
     } // end of if
     else
     {
-        cout << "Invalid Credentials";
+        cout << "Invalid Credentials !";
     }
 }
-
-/*ind|HSI|HSN|Phone|LD|Trial-Stage
-0|a|a|a|a|a
-1|b|b|b|b|b
-2|c|c|c|c|c
-
-a|0
-b|1
-c|2
-*/
