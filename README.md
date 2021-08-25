@@ -118,13 +118,12 @@ issues ,dosage information and alert doctors monitoring them.
 
 
 ## Output Snapshots
-
+![drugDashboard](https://user-images.githubusercontent.com/56950692/130561707-0d1b9131-749a-432f-8d70-4ad4d416d9ce.png)
 ![addDrug](https://user-images.githubusercontent.com/56950692/130561687-cd680e2f-cefc-4ddf-a278-7b12b0cf2626.png)
 ![BackToMenuDrug](https://user-images.githubusercontent.com/56950692/130561693-d28774ad-c126-45b8-ac45-01d4aba54b4a.png)
 ![DaddFail](https://user-images.githubusercontent.com/56950692/130561695-4bf7a988-bb4d-4047-9041-155434fc8cb8.png)
 ![dissplayRecordsDrug](https://user-images.githubusercontent.com/56950692/130561699-db61454f-0455-4feb-8fb3-2633aea8517d.png)
 ![DmodifyFail](https://user-images.githubusercontent.com/56950692/130561704-1fb43dca-df36-43dc-9332-f85e09749bd1.png)
-![drugDashboard](https://user-images.githubusercontent.com/56950692/130561707-0d1b9131-749a-432f-8d70-4ad4d416d9ce.png)
 ![DsearchFail](https://user-images.githubusercontent.com/56950692/130561708-c633ba8d-0f1a-4e1b-bdda-2adfd28678aa.png)
 ![HaddDrug](https://user-images.githubusercontent.com/56950692/130561710-1827d2cf-7d0b-4f70-bfa3-22922c37333e.png)
 ![HaddFail](https://user-images.githubusercontent.com/56950692/130561711-c4455dc5-5b72-42ac-8286-def27e508e99.png)
